@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O what dog is this?</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<h1>O What Dog Is This??</h1>
+<h3> The breed predictor!</h3>
+<body>
+    <img id="img" src="dog.jpeg" crossorigin= "anonymous"></img>
+    <button id= "yes-button">Yes!</button>
+    <button id= "no-button">No!</button>
+    <input type= "text" placeholder="type name here">
+</body>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.1"> </script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@1.0.0"> </script>
+<script>
+    const img = document.getElementById('img');
+    mobilenet.load().then(model => {
+        model.classify(img).then(predictions => {
+      console.log('Predictions: ');
+      console.log(predictions);
+    });
+  });
+</script>
+</html>
