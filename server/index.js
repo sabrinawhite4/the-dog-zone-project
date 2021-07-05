@@ -12,6 +12,10 @@ app.listen(port, () => {
 
 const dogs = []
 
+app.get("/", (req,res) => {
+    res.sendFile(path.join(__dirname, "./index.html"));
+})
+
 app.get('/dogName', (req, res) => {
     const newDogName = generateDoggieName();
     res.status(200).send(newDogName);
