@@ -8,30 +8,70 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <h1>O What Dog Is This??</h1>
-<h3> The breed predictor!</h3>
+<h3> The breed predictor! Ever seen a cute dog and not know what it was? Well now you can! Upload a dog picture below to find out!</h3>
 <body>
-    <img id="img" src="dog.jpeg"></img>
-    <button id= "yes-button">Yes!</button>
-    <button id= "no-button">No!</button>
-    <input type= "text" placeholder="type URL nhere">
-    <button id= "submit-button">Submit!</button>
+    <img id="img" crossOrigin = "anonymous" src="dog.jpeg"></img>
+    <input type= "file" placeholder="type dog URL here">
+    <div id= 'doggie-name'>Predicted Breed:</div>
+    <div id= 'doggie-div'>loading...</div>
+    <button id= "dog-name">Name Suggestion</button>
+    <div id= 'name-div'></div>
+    <button id= "yes-button" disabled>Yes!</button>
+    <button id= "no-button" disabled>No!</button>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.1"> </script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@1.0.0"> </script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
+    const nameSuggest = document.getElementById('dog-name')
+    const noBtn = document.getElementById('no-button');
+    const yesBtn = document.getElementById('yes-button');
     const img = document.getElementById('img');
     const dogInput = document.querySelector('input')
+
+    function dogName() {
+       axios.get("http://localhost:5050/dogName", headers = {'Access-Control-Allow-Origin': '*', 'origin': 'http://localhost:5050'}).then((response) => { const data = response.data;
+        console.log(data);
+       })
+
+    }
+
     function dogChanger(URL) {
-        img.setAttribute("src", URL );  
+        img.setAttribute("src", URL) 
+    };
+    function capFirst(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+    };
+
+    function yesToName() {
+        alert('You said YES to the name! CONGRATS!');
+        yesBtn.setAttribute('disabled', 'true');
+        noBtn.setAttribute('disabled', 'true');
+    };
+
+    function generateDoggieName() {
+        const name = ['franklin','simba','kobe','ozzy','rex','ollie','bubba','king','spot','rajah','mia', 'peanut','wally','louis', 'buster','bear', 'bertram','bark obama','chico','goose']
+        const newName = capFirst(name[getRandomInt(0, name.length + 1)])
+        alert("Optimizing New Doggie Name...")
+        console.log(newName)
+        document.getElementById('name-div').textContent = newName
+        nameSuggest.setAttribute('disabled', 'true');
+        noBtn.removeAttribute('disabled');
+        yesBtn.removeAttribute('disabled');
+        return newName;
     };
     function updateDog() {
         const newURL = dogInput.value;
         dogChanger(newURL);
-        img.setAttribute('crossorigin', 'anonymous' )
         mobilenet.load().then(model => {
             model.classify(img).then(predictions => {
                 console.log('Predictions: ');
                 console.log(predictions);
+                
             });
         });
     };
@@ -39,9 +79,35 @@
         model.classify(img).then(predictions => {
             console.log('Predictions: ');
             console.log(predictions);
+            document.getElementById('doggie-div').textContent = predictions[0].className
             });
         });
 
-document.getElementById('submit-button').addEventListener('click', updateDog);
+    
+    nameSuggest.addEventListener('click', generateDoggieName);
+    noBtn.addEventListener('click', generateDoggieName);
+    yesBtn.addEventListener('click', yesToName);
+    window.addEventListener('load', function() {
+        document.querySelector('input[type="file"]').addEventListener('change', function() {
+            noBtn.removeAttribute('disabled');
+            yesBtn.removeAttribute('disabled');
+            nameSuggest.removeAttribute('disabled');
+            if (this.files && this.files[0]) {
+            var img = document.querySelector('img');
+            img.onload = () => {
+                URL.revokeObjectURL(img.src);  // no longer needed, free memory
+            }
+
+            img.src = URL.createObjectURL(this.files[0]); // set src to blob url
+            mobilenet.load().then(model => {
+                model.classify(img).then(predictions => {
+                    console.log('Predictions: ');
+                    console.log(predictions);
+                    document.getElementById('doggie-div').textContent = predictions[0].className
+                    });
+                });
+            }
+        });
+    });
 </script>
 </html>
