@@ -11,13 +11,17 @@
 <h3> The breed predictor! Ever seen a cute dog and not know what it was? Well now you can! Upload a dog picture below to find out!</h3>
 <body>
     <img id="img" crossOrigin = "anonymous" src="dog.jpeg"></img>
-    <input type= "file" placeholder="type dog URL here">
-    <div id= 'doggie-name'>Predicted Breed:</div>
-    <div id= 'doggie-div'>loading...</div>
+    <h2>Upload Picture Below:</h2>
+    <input type= "file" class= 'btns-class'>
+    <h2 id= 'doggie-name'>Predicted Breed:</h2>
+    <h3 id= 'doggie-div'>loading...</h3>
     <button id= "dog-name">Name Suggestion</button>
-    <div id= 'name-div'></div>
-    <button id= "yes-button" disabled>Yes!</button>
-    <button id= "no-button" disabled>No!</button>
+    <div id= 'name-div'> Click Name Suggestion to get a name!</div>
+    <span>Do you like this name?</span>
+    <div>
+        <button id= "yes-button" disabled class='btns-class'>Yes!</button>
+        <button id= "no-button" disabled class= 'btns-class'>No!</button> 
+    </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.1"> </script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@1.0.0"> </script>
